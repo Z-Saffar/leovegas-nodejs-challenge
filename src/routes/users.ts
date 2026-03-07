@@ -3,6 +3,7 @@ import userModel, { UPDATABLE_FIELDS } from '../models/user';
 import type { ResultSetHeader } from 'mysql2/promise';
 import { formatCollection, formatErrors, formatResource } from '../utils/jsonapi';
 import authMiddleware from '../middleware/auth';
+import { requireAdmin, requireOwnerOrAdmin } from '../middleware/authorize';
 
 const router = Router();
 
@@ -45,7 +46,7 @@ router.post('/', async (req: Request, res: Response) => {
 
 router.use(authMiddleware);
 
-router.get('/', async (_req: Request, res: Response) => {
+router.get('/', requireAdmin, async (_req: Request, res: Response) => {
   try {
     const rows = await userModel.getAllUsers();
     res.status(200).json(formatCollection('users', rows as Array<Record<string, unknown>>));
@@ -55,7 +56,7 @@ router.get('/', async (_req: Request, res: Response) => {
   }
 });
 
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', requireOwnerOrAdmin, async (req: Request, res: Response) => {
   try {
     const id = String(req.params.id);
     const user = await userModel.getUserById(id);
@@ -70,7 +71,7 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-router.put('/:id', async (req: Request, res: Response) => {
+router.put('/:id', requireOwnerOrAdmin, async (req: Request, res: Response) => {
   try {
     const id = String(req.params.id);
     const userData: Record<string, string> = {};
@@ -95,7 +96,7 @@ router.put('/:id', async (req: Request, res: Response) => {
   }
 });
 
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', requireAdmin, async (req: Request, res: Response) => {
   try {
     const id = String(req.params.id);
     const result = await userModel.deleteUser(id);
