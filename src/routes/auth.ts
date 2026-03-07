@@ -3,18 +3,14 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import userModel from '../models/user';
 import { formatErrors, formatResource } from '../utils/jsonapi';
+import { validate } from '../middleware/validate';
+import { loginValidators } from '../validators/auth';
 
 const router = Router();
 
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', validate(loginValidators), async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json(
-        formatErrors([{ status: '400', title: 'Bad Request', detail: 'email and password are required' }])
-      );
-    }
 
     const user = await userModel.findUserByEmail(String(email).trim());
     if (!user) {

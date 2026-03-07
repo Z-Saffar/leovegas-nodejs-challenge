@@ -4,18 +4,19 @@ import type { ResultSetHeader } from 'mysql2/promise';
 import { formatCollection, formatErrors, formatResource } from '../utils/jsonapi';
 import authMiddleware from '../middleware/auth';
 import { requireAdmin, requireOwnerOrAdmin } from '../middleware/authorize';
+import { validate } from '../middleware/validate';
+import {
+  userValidators,
+  userUpdateValidators,
+  userGetByIdValidators,
+  userDeleteValidators,
+} from '../validators/user';
 
 const router = Router();
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', validate(userValidators), async (req: Request, res: Response) => {
   try {
     const { name, email, password, role } = req.body;
-
-    if (!name || !email || !password) {
-      return res.status(400).json(
-        formatErrors([{ status: '400', title: 'Bad Request', detail: 'name, email, and password are required' }])
-      );
-    }
 
     const userData = {
       name: String(name).trim(),
@@ -56,7 +57,7 @@ router.get('/', requireAdmin, async (_req: Request, res: Response) => {
   }
 });
 
-router.get('/:id', requireOwnerOrAdmin, async (req: Request, res: Response) => {
+router.get('/:id', validate(userGetByIdValidators), requireOwnerOrAdmin, async (req: Request, res: Response) => {
   try {
     const id = String(req.params.id);
     const user = await userModel.getUserById(id);
@@ -71,7 +72,7 @@ router.get('/:id', requireOwnerOrAdmin, async (req: Request, res: Response) => {
   }
 });
 
-router.put('/:id', requireOwnerOrAdmin, async (req: Request, res: Response) => {
+router.put('/:id', validate(userUpdateValidators), requireOwnerOrAdmin, async (req: Request, res: Response) => {
   try {
     const id = String(req.params.id);
     const userData: Record<string, string> = {};
@@ -79,11 +80,6 @@ router.put('/:id', requireOwnerOrAdmin, async (req: Request, res: Response) => {
       if (req.body[key] !== undefined) {
         userData[key] = req.body[key];
       }
-    }
-    if (Object.keys(userData).length === 0) {
-      return res.status(400).json(
-        formatErrors([{ status: '400', title: 'Bad Request', detail: 'At least one field (name, email, role) is required' }])
-      );
     }
     const result = await userModel.updateUser(id, userData);
     if (result.affectedRows === 0) {
@@ -96,7 +92,7 @@ router.put('/:id', requireOwnerOrAdmin, async (req: Request, res: Response) => {
   }
 });
 
-router.delete('/:id', requireAdmin, async (req: Request, res: Response) => {
+router.delete('/:id', validate(userDeleteValidators), requireAdmin, async (req: Request, res: Response) => {
   try {
     const id = String(req.params.id);
     const result = await userModel.deleteUser(id);
