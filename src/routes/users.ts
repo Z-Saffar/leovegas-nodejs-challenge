@@ -32,7 +32,7 @@ router.post('/', async (req: Request, res: Response) => {
     );
   } catch (error: unknown) {
     const err = error as { code?: string; message?: string };
-    console.error('POST /users error:', err.message ?? err);
+    console.error('POST /users:', error);
     if (err.code === 'ER_DUP_ENTRY') {
       return res.status(409).json(formatErrors([{ status: '409', title: 'Conflict', detail: 'Email already exists' }]));
     }
@@ -47,7 +47,7 @@ router.get('/', async (_req: Request, res: Response) => {
     const rows = await userModel.getAllUsers();
     res.status(200).json(formatCollection('users', rows as Array<Record<string, unknown>>));
   } catch (error) {
-    console.error(error);
+    console.error('GET /users:', error);
     res.status(500).json(formatErrors([{ status: '500', title: 'Internal Server Error', detail: 'Failed to get all users' }]));
   }
 });
@@ -62,7 +62,7 @@ router.get('/:id', async (req: Request, res: Response) => {
     const { id: _id, ...attributes } = user as Record<string, unknown> & { id: number };
     res.status(200).json(formatResource('users', user.id, attributes));
   } catch (error) {
-    console.error(error);
+    console.error('GET /users/:id:', error);
     res.status(500).json(formatErrors([{ status: '500', title: 'Internal Server Error', detail: 'Failed to get user' }]));
   }
 });
@@ -87,7 +87,7 @@ router.put('/:id', async (req: Request, res: Response) => {
     }
     res.status(200).json(formatResource('users', id, userData));
   } catch (error) {
-    console.error(error);
+    console.error('PUT /users/:id:', error);
     res.status(500).json(formatErrors([{ status: '500', title: 'Internal Server Error', detail: 'Failed to update user' }]));
   }
 });
@@ -101,7 +101,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
     }
     res.status(200).json(formatResource('users', id, {}));
   } catch (error) {
-    console.error(error);
+    console.error('DELETE /users/:id:', error);
     res.status(500).json(formatErrors([{ status: '500', title: 'Internal Server Error', detail: 'Failed to delete user' }]));
   }
 });

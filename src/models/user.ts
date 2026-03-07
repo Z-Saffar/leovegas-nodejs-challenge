@@ -82,10 +82,20 @@ const deleteUser = async (id: string): Promise<{ affectedRows: number }> => {
   return result as unknown as { affectedRows: number };
 };
 
+const findUserByEmail = async (email: string): Promise<UserDbRow | null> => {
+  const [rows] = await pool.query<mysql.RowDataPacket[]>(
+    'SELECT * FROM users WHERE email = ?',
+    [email]
+  );
+  const user = rows[0] as UserDbRow | undefined;
+  return user ?? null;
+};
+
 export default {
   createUser,
   getAllUsers,
   getUserById,
   updateUser,
   deleteUser,
+  findUserByEmail,
 };
