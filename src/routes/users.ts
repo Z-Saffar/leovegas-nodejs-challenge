@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import userModel, { UPDATABLE_FIELDS } from '../models/user';
 import type { ResultSetHeader } from 'mysql2/promise';
 import { formatCollection, formatErrors, formatResource } from '../utils/jsonapi';
+import authMiddleware from '../middleware/auth';
 
 const router = Router();
 
@@ -41,6 +42,8 @@ router.post('/', async (req: Request, res: Response) => {
     res.status(500).json(formatErrors([{ status: '500', title: 'Internal Server Error', detail }]));
   }
 });
+
+router.use(authMiddleware);
 
 router.get('/', async (_req: Request, res: Response) => {
   try {
