@@ -81,6 +81,10 @@ router.put('/:id', validate(userUpdateValidators), requireOwnerOrAdmin, async (r
         userData[key] = req.body[key];
       }
     }
+    const currentUser = (req as Request & { user: { userId: number; role: string } }).user;
+    if (Number(id) === currentUser.userId && userData.role) {
+      return res.status(403).json(formatErrors([{ status: '403', title: 'Forbidden', detail: 'You cannot change your own role' }]));
+    }
     const result = await userModel.updateUser(id, userData);
     if (result.affectedRows === 0) {
       return res.status(404).json(formatErrors([{ status: '404', title: 'Not Found', detail: 'User not found' }]));
@@ -95,6 +99,10 @@ router.put('/:id', validate(userUpdateValidators), requireOwnerOrAdmin, async (r
 router.delete('/:id', validate(userDeleteValidators), requireAdmin, async (req: Request, res: Response) => {
   try {
     const id = String(req.params.id);
+    const currentUser = (req as Request & { user: { userId: number } }).user;
+    if (Number(id) === currentUser.userId) {
+      return res.status(403).json(formatErrors([{ status: '403', title: 'Forbidden', detail: 'You cannot delete your own account' }]));
+    }
     const result = await userModel.deleteUser(id);
     if (result.affectedRows === 0) {
       return res.status(404).json(formatErrors([{ status: '404', title: 'Not Found', detail: 'User not found' }]));
