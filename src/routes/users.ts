@@ -39,9 +39,8 @@ router.post('/', validate(userValidators), async (req: Request, res: Response) =
     if (err.code === 'ER_DUP_ENTRY') {
       return res.status(409).json(formatErrors([{ status: '409', title: 'Conflict', detail: 'Email already exists' }]));
     }
-    const isDev = process.env.NODE_ENV !== 'production';
-    const detail = isDev ? String(err.message ?? err) : 'Failed to create user';
-    res.status(500).json(formatErrors([{ status: '500', title: 'Internal Server Error', detail }]));
+
+    res.status(500).json(formatErrors([{ status: '500', title: 'Internal Server Error', detail: 'Failed to create user' }]));
   }
 });
 
