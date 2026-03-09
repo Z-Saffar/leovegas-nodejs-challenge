@@ -1,0 +1,29 @@
+meta {
+  name: updateUser
+  type: http
+  seq: 5
+}
+
+put {
+  url: http://localhost:3000/users/1
+  body: json
+  auth: inherit
+}
+
+headers {
+  Content-Type: application/json
+  Authorization: Bearer {{token}}
+}
+
+body:json {
+  {
+    "name": "Zahra Saffar",
+    "email": "zahra@example.com",
+    "role": "ADMIN"
+  }
+}
+
+settings {
+  encodeUrl: false
+  timeout: 0
+}

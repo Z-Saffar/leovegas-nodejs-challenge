@@ -1,0 +1,5 @@
+# Env files that may contain tokens/secrets
+.env
+.env.local
+*.env
+*.local.env
