@@ -1,4 +1,4 @@
-# LeoVegas Node.js Challenge
+# Node.js Challenge
 
 A RESTful API for user management with authentication and role-based authorization. Built with Node.js, TypeScript, Express, and MySQL.
 
