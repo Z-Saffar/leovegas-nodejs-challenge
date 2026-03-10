@@ -54,10 +54,12 @@ Edit `.env`:
 ```
 DB_HOST=localhost
 DB_USER=root
-DB_PASSWORD=your_password
+DB_PASSWORD=rootpassword
 DB_NAME=leovegas
 JWT_SECRET=your-secret-key
 ```
+
+`DB_PASSWORD=rootpassword` matches `docker-compose.yml`. For existing MySQL, change it to your server's password.
 
 ### 3. Database
 
@@ -70,7 +72,7 @@ npm run db:setup
 
 **Option B: Existing MySQL**
 
-Ensure MySQL is running, then:
+Change `DB_PASSWORD` in `.env` to match your MySQL server's password. Ensure MySQL is running, then:
 
 ```bash
 npm run db:setup
@@ -89,12 +91,6 @@ This creates the database, `users` table, and seeds an admin user:
 npm run dev
 ```
 
-**Production:**
-
-```bash
-npm run build
-npm start
-```
 
 Server runs at `http://localhost:3000`.
 
