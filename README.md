@@ -122,6 +122,12 @@ npm run test:coverage
 
 ## API Endpoints
 
+### Health
+
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| GET | `/health` | No | Health check (200 if DB reachable, 503 otherwise) |
+
 ### Auth
 
 | Method | Endpoint | Auth | Description |

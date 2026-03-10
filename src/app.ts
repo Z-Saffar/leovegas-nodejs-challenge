@@ -2,11 +2,13 @@ import 'dotenv/config';
 import express, { Request, Response, NextFunction } from 'express';
 import usersRouter from './routes/users';
 import authRouter from './routes/auth';
+import healthRouter from './routes/health';
 import { formatErrors } from './utils/jsonapi';
 
 const app = express();
 app.use(express.json());
 
+app.use('/health', healthRouter);
 app.use('/auth', authRouter);
 app.use('/users', usersRouter);
 
