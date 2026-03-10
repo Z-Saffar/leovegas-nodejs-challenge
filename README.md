@@ -118,7 +118,7 @@ npm run test:watch
 npm run test:coverage
 ```
 
-> **Note:** Tests use the same database. Ensure `.env` is configured and MySQL is running.
+> **Note:** Tests use a separate database (`leovegas_test`). Run `npm run db:setup:test` once before first test run (and after schema changes).
 
 ## API Endpoints
 
@@ -161,6 +161,7 @@ src/
 | `npm run build` | Compile TypeScript |
 | `npm start` | Run compiled app |
 | `npm test` | Run tests |
-| `npm run db:setup` | Initialize database and seed admin |
+| `npm run db:setup` | Initialize main database and seed admin |
+| `npm run db:setup:test` | Initialize test database (`leovegas_test`) |
 | `npm run lint` | Run ESLint |
 | `npm run format` | Format with Prettier |
